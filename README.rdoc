@@ -238,6 +238,41 @@ use AutoForme in Rails development mode.  The best way to handle it is to call
 +AutoForme.for+ in the related controller file, and have an initializer reference
 the controller class, causing the controller file to be loaded.
 
+= Example: Carrierwave Integration
+
+Suppose you have a model with an uploader mounted at a field called image.
+
+You'll probably want to show a file upload field on the new and edit actions,
+it will also require a multipart form:
+
+  form_attributes do |type, request|
+    case type
+    when :edit, :new
+      { enctype: "multipart/form-data" }
+    end
+  end
+
+  column_options do |column, type, request|
+    case { type => column }
+    when { new: :image }
+      { type: :file }
+    when { edit: :image }
+      { type: :file, wrapper: proc { |t, i| [t, i.tag(:img, src: i.opts[:value])] }}
+    end
+  end
+
+You'll probably want this field to not show up on all the other actions:
+
+  columns do |type, request|
+    columns = [:name, :description]
+
+    case type
+    when :edit, :new then columns << :image
+    end
+
+    columns
+  end
+
 = TODO
 
 * capybara-webkit tests for ajax behavior
