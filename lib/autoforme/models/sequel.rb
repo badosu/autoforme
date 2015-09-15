@@ -11,7 +11,7 @@ module AutoForme
       # Make sure the forme plugin is loaded into the model.
       def initialize(*)
         super
-        model.plugin :forme
+        #model.plugin :forme
       end
 
       # The base class for the underlying model, ::Sequel::Model.
